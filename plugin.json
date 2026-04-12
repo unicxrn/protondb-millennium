@@ -1,0 +1,9 @@
+{
+	"$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
+
+	"name": "protondb",
+	"common_name": "ProtonDB",
+	"description": "Shows ProtonDB compatibility ratings on Steam store pages.",
+	"version": "1.0.0",
+	"backendType": "lua"
+}

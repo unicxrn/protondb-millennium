@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Package plugin
+        run: |
+          mkdir -p release/protondb/.millennium/Dist
+          cp plugin.json LICENSE README.md release/protondb/
+          cp -r backend release/protondb/
+          cp .millennium/Dist/index.js .millennium/Dist/webkit.js release/protondb/.millennium/Dist/
+          cd release
+          zip -r ../protondb-${{ github.ref_name }}.zip protondb/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: protondb-${{ github.ref_name }}.zip
+          generate_release_notes: true
