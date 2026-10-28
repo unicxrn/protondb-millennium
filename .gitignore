@@ -1,0 +1,7 @@
+node_modules/
+.millennium/
+dist/
+build/
+*.star
+backend/cache/
+PluginDatabase/

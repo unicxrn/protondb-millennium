@@ -1,0 +1,10 @@
+{
+  "// why": "Typechecks tests/, the one source directory with no tsconfig of its own , frontend/ and webview/ each have one, and the root config is only their shared base. include also keeps the checker off PluginDatabase/, a gitignored leftover of the pre-2.0 submission entry that still imports the removed @steambrew/webkit.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2020", "DOM"]
+  },
+  "include": ["tests", "shared"],
+  "exclude": ["node_modules", "PluginDatabase", ".millennium", "tests/lua"]
+}

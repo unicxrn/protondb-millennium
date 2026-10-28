@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        # Frozen: the toolchain version has to be the one the lockfile pins.
+        # A plain install once resolved a different TypeScript than the one
+        # the tests were written against, and the release failed on config
+        # options that compiler had removed.
+        run: pnpm install --frozen-lockfile
+
+      - name: Test
+        # The Lua suite needs luajit; the TypeScript suite does not.
+        run: |
+          sudo apt-get update && sudo apt-get install -y luajit
+          pnpm test
+
+      - name: Build
+        # Starlight packs everything - backend Lua, frontend and webview
+        # bundles, metadata - into a single .star. output_path is "auto", which
+        # resolves to a local Millennium install that CI does not have, so the
+        # output directory is given explicitly. --of takes a DIRECTORY; the
+        # file inside is named after the plugin id from millennium.toml.
+        run: |
+          mkdir -p build
+          ./node_modules/.bin/starlight pack --release --of build
+
+      - name: Verify the artifact
+        run: ./node_modules/.bin/starlight verify build/com.unicxrn.protondb.star
+
+      - name: Name the artifact after the tag
+        run: mv build/com.unicxrn.protondb.star protondb-${{ github.ref_name }}.star
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: protondb-${{ github.ref_name }}.star
+          generate_release_notes: true

@@ -1,0 +1,27 @@
+{
+	"scripts": {
+		"dev": "starlight watch",
+		"build": "starlight pack",
+		"typecheck": "tsc -p frontend/tsconfig.json --noEmit && tsc -p webview/tsconfig.json --noEmit && tsc -p tsconfig.check.json",
+		"test": "pnpm run typecheck && vitest run && luajit tests/lua/run.lua",
+		"test:ts": "vitest run",
+		"test:lua": "luajit tests/lua/run.lua",
+		"test:watch": "vitest"
+	},
+	"devDependencies": {
+		"@steambrew/client": "^5.5.3",
+		"@steambrew/starlight": "^1.1.6",
+		"@types/react": "^19.1.12",
+		"@types/react-dom": "^19.1.9",
+		"happy-dom": "^21.0.4",
+		"typescript": "^5.9.3",
+		"vitest": "^2.1.9"
+	},
+	"type": "module",
+	"name": "protondb",
+	"version": "2.0.0",
+	"description": "Shows ProtonDB compatibility ratings on Steam store pages",
+	"author": "unicxrn",
+	"license": "MIT",
+	"packageManager": "pnpm@10.32.1"
+}

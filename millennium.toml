@@ -1,0 +1,43 @@
+[plugin]
+id = "com.unicxrn.protondb"
+name = "ProtonDB"
+version = "2.0.0"
+author = "unicxrn"
+description = "Shows ProtonDB compatibility and anticheat status on Steam store and library pages."
+
+[backend]
+entry = "backend/main.lua"
+# Every sibling module is compiled in. Under the legacy loose-file format these
+# were resolved through package.path at runtime; packed plugins get them
+# registered into package.preload instead.
+sources = ["backend/*.lua"]
+
+[frontend]
+entry = "frontend/index.tsx"
+
+[webkit]
+# Runs in Steam's browser views (store, community). No React, raw DOM only.
+entry = "webview/preload.ts"
+
+[compiler]
+# "auto" installs the built .star straight into the detected Millennium, as
+# plugins/<id>.star. The source directory itself is no longer a plugin - it has
+# no plugin.json - so Millennium loads the .star and ignores the sources
+# sitting beside it.
+output_path = "auto"
+
+[dev]
+plugin_name = "protondb"
+auto_restart = true
+# Reload the Steam UI on a frontend change, and restart the backend on a Lua
+# change, instead of quitting and relaunching Steam by hand.
+reload_steamui_when = "both"
+
+[logger]
+padding = 4
+backend_prefix = "BCK"
+frontend_prefix = "FRT"
+webview_prefix = "WEB"
+
+[patches]
+debug = false
